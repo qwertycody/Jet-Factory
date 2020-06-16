@@ -422,16 +422,21 @@ func Factory(distro string) (err error) {
 	}
 
 	if isAndroid {
+		//Uncomment one below if building pablo's docker build locally and don't want to get from docker.io
+		//dockerImageName = "pablozaiden/switchroot-android-build:latest"
 		dockerImageName = "docker.io/pablozaiden/switchroot-android-build:1.0.4"
 
 		if err := os.MkdirAll("/root/android/lineage", 0755); err != nil {
 			return err
 		}
 
-		if err = SpawnContainer(nil, []string{"ROM_NAME=" + distro, "ROM_TYPE=zip"}); err != nil {
+		//Change from true to false on the third parameter for SpawnContainerFull if you want to use local cache
+		//in conjunction with the above change on the dockerImageName variable above
+		if err = SpawnContainerFull(nil, []string{"ROM_NAME=" + distro, "ROM_TYPE=zip"}, true); err != nil {
 			log.Println(err)
 			return err
 		}
+
 		return nil
 	}
 
